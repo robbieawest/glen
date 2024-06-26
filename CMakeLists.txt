@@ -7,9 +7,14 @@ add_executable(glen
         src/application.h
         src/application.cpp
         src/GlenConstants.h
+        src/GLError.cpp
+        src/GLError.h
+        src/MiscHelper.cpp
+        src/MiscHelper.h
+        src/AppState.h
 )
 
-set_property(TARGET glen PROPERTY CXX_STANDARD 17)
+set_property(TARGET glen PROPERTY CXX_STANDARD 20)
 target_compile_options(glen PRIVATE -Wall)
 
 add_definitions(-DGLEW_STATIC)

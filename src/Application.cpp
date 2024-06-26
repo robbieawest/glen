@@ -5,10 +5,13 @@
 
 #include "Application.h"
 #include "GlenConstants.h"
+#include "AppState.h"
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+void Application::key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
+        state = AppState::HALTED;
+    }
 }
 
 Application::Application() {
@@ -19,23 +22,23 @@ Application::Application() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", 0, 0);
+    window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", 0, 0);
     glfwMakeContextCurrent(window);
     if (window == nullptr)
     {
         spdlog::error("Could not initialize GLFW");
         glfwTerminate();
-        validSession = false;
+        state = AppState::FAILED;
         return;
     }
     spdlog::info("GLFW initialized without error");
 
-    glfwSetKeyCallback(window, key_callback);
+    glfwSetKeyCallback(window, key_callback); //make application singleton
 
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) {
         spdlog::error("Could not intialize GLEW");
-        validSession = false;
+        state = AppState::FAILED;
         return;
     }
     spdlog::info("GLEW initialized without error");
@@ -44,7 +47,24 @@ Application::Application() {
 }
 
 void Application::run() {
+    while (state == AppState::RUNNING) {
+        const double currentTime = glfwGetTime();
+        deltaTime = currentTime - time;
+        time = currentTime;
+        fps = 1.0 / deltaTime;
+
+        loop();
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    spdlog::info("Glen exited at state {}", toString(state));
+}
+
+void Application::loop() {
 
 }
+
 
 
