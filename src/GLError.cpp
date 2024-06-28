@@ -3,14 +3,23 @@
 #include "GL/glew.h"
 #include "spdlog/spdlog.h"
 
+#include "MiscHelper.h"
+
 void gle::GLClearError() {
 	while (glGetError() != GL_NO_ERROR);
 }
 
-void gle::GLLogCall(const char* function, const char* file, int line) {
+void gle::GLLogCall(const char* function, const char* path, int line) {
 	GLenum error;
 	while ((error = glGetError()) != GL_NO_ERROR) {
-		spdlog::error("Line {} {}\n| OpenGL ERROR | : [{}] {}", line, file, error, function);
+		const std::string file = helper::split(path, '/').back();
+		spdlog::error(
+			"OpenGL Error occurred at function call\n\t"
+				"| FILE | : {}\n\t"
+				"| LINE | : {}\n\t"
+				"| Error Description | : [{}] {}"
+				, file, line, error, function
+				);
 	}
 }
 

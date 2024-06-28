@@ -9,9 +9,12 @@ add_executable(glen
         src/GlenConstants.h
         src/GLError.cpp
         src/GLError.h
-        src/MiscHelper.cpp
         src/MiscHelper.h
         src/AppState.h
+        src/Shader.cpp
+        src/Shader.h
+        src/MiscHelper.cpp
+        src/MiscHelper.tpp
 )
 
 set_property(TARGET glen PROPERTY CXX_STANDARD 20)

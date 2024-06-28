@@ -6,8 +6,8 @@
 #include "AppState.h"
 
 int main() {
-    Application app;
-    if(app.state == AppState::FAILED) return -1;
-    app.run();
+    Application* app = Application::getInstance();
+    if(app->state == AppState::FAILED) return -1;
+    app->run();
     return 0;
 }
