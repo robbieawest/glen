@@ -4,7 +4,6 @@
 #include <fstream>
 #include <unordered_map>
 #include <string>
-
 #include "glm/glm.hpp"
 
 class Shader {

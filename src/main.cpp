@@ -2,8 +2,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "Application.h"
-#include "AppState.h"
+#include "Application/Application.h"
+#include "Application/AppState.h"
 
 int main() {
     Application* app = Application::getInstance();

@@ -2,7 +2,6 @@
 #define MISCHELPER_TPP
 
 #include <sstream>
-#include <iterator>
 #include <string>
 #include <format>
 

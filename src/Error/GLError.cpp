@@ -1,9 +1,7 @@
-#include "GLError.h"
-
 #include "GL/glew.h"
 #include "spdlog/spdlog.h"
-
-#include "MiscHelper.h"
+#include "GLError.h"
+#include "Utils/MiscHelper.h"
 
 void gle::GLClearError() {
 	while (glGetError() != GL_NO_ERROR);

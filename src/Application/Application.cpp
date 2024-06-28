@@ -1,15 +1,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 #include <string>
-
 #include "spdlog/spdlog.h"
-
 #include "Application.h"
-#include "GlenConstants.h"
 #include "AppState.h"
-#include "GLError.h"
-#include "Shader.h"
+#include "Shader/Shader.h"
+#include "Utils/GlenConstants.h"
+#include "Error/GLError.h"
 
 Application* Application::instance = nullptr;
 
