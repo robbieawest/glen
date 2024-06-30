@@ -6,13 +6,13 @@
 #include "spdlog/spdlog.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "Shader.h"
 #include "Utils/MiscHelper.h"
+#include "Shader.h"
 #include "Utils/GlenConstants.h"
 #include "Error/GLError.h"
 
 std::string Shader::get_source(const std::string& filename) {
-	std::string path = helper::format(resourcesPath + shadersPath + filenameInput, filename);
+	std::string path = helper::format(resourcesPath + shadersPath + filenameInput, {filename});
 
 	std::ifstream parser(path);
 	if (!parser.is_open())

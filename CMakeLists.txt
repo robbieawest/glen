@@ -1,10 +1,8 @@
 cmake_minimum_required (VERSION 3.1)
-set(CMAKE_C_COMPILER gcc)
-set(CMAKE_C_FLAGS -m32)
-set(CMAKE_CXX_COMPILER g++)
-set(CMAKE_CXX_FLAGS -m32)
 
 project (glen)
+
+set(CMAKE_GENERATOR_PLATFORM x86)
 
 add_executable(glen
   src/main.cpp
@@ -23,10 +21,9 @@ add_executable(glen
         src/Texture/Texture.h
 )
 
-set_property(TARGET glen PROPERTY CXX_STANDARD 20)
-target_compile_options(glen PRIVATE -Wall)
+set_property(TARGET glen PROPERTY CXX_STANDARD 23)
 
-add_compile_definitions(-DGLEW_STATIC)
+add_compile_definitions(-DGLEW_STATIC -DSTB_IMAGE_IMPLEMENTATION)
 
 set(dep ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)
 message("dep ${dep}")

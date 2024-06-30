@@ -17,7 +17,7 @@
 	std::string extension = spl_res[1];
 	if (extension != "png" && extension != "jpg")spdlog::error("Invalid file extension: {}", extension);
 
-	std::string path = helper::format("./Resources/Images/{}", filename);
+	std::string path = helper::format("./Resources/Images/{}", {filename});
 	const char* path_cstr = path.c_str();
 
 	Texture ret;
