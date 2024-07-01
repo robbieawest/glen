@@ -3,11 +3,11 @@
 #include <iostream>
 #include <utility>
 #include <string>
-#include "spdlog/spdlog.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "Utils/MiscHelper.h"
 #include "Shader.h"
+#include "Utils/MiscHelper.h"
+#include "Utils/LogType.h"
 #include "Utils/GlenConstants.h"
 #include "Error/GLError.h"
 
@@ -16,7 +16,7 @@ std::string Shader::get_source(const std::string& filename) {
 
 	std::ifstream parser(path);
 	if (!parser.is_open())
-		spdlog::error("shader does not exist at path: {}", path);
+		helper::log(LogType::ERROR, __func__, "shader does not exist at path: {}", {path});
 
 	std::string ret, line;
 	while (std::getline(parser, line))
@@ -55,7 +55,7 @@ void Shader::addTexture(const std::string& uniform) {
 	glc(glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success));
 	if (!success) {
 		glc(glGetShaderInfoLog(vertex_shader, 512, nullptr, infolog));
-		spdlog::error("|VERTEX SHADER COMPILATION ERROR|\n{}", infolog);
+		helper::log(LogType::ERROR, __func__, "|VERTEX SHADER COMPILATION ERROR|\n{}", {infolog});
 	}
 
 
@@ -68,7 +68,7 @@ void Shader::addTexture(const std::string& uniform) {
 	glc(glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success));
 	if (!success) {
 		glc(glGetShaderInfoLog(fragment_shader, 512, nullptr, infolog));
-		spdlog::error("|FRAGMENT SHADER COMPILATION ERROR|\n{}", infolog);
+		helper::log(LogType::ERROR, __func__, "|FRAGMENT SHADER COMPILATION ERROR|\n{}", {infolog});
 	}
 
 	Shader ret;
@@ -83,15 +83,14 @@ void Shader::addTexture(const std::string& uniform) {
 	glc(glGetProgramiv(ret.id, GL_LINK_STATUS, &success));
 	if (!success) {
 		glc(glGetProgramInfoLog(ret.id, 512, nullptr, infolog));
-		spdlog::error("|SHADER PROGRAM LINKING ERROR|\n{}", infolog);
+		helper::log(LogType::ERROR, __func__, "| SHADER PROGRAM LINKING ERROR|\n{}", {infolog});
 	}
 
 	ret.attach();
 	glc(glDeleteShader(fragment_shader));
 	glc(glDeleteShader(vertex_shader));
 
-	spdlog::info("Shader parsed without error from {} and {}", vertex_path, fragment_path);
-
+	helper::log(LogType::INFO, __func__, "Shader parsed without error from {} and {}", {vertex_path, fragment_path});
 	return ret;
 }
 
@@ -104,12 +103,13 @@ void Shader::deattach() {
 }
 
 void Shader::cache_uniform(std::string uniform_id) {
-	if (uniform_cache.contains(uniform_id)) {
+	if (uniform_cache.find(uniform_id) != uniform_cache.end()) {
 		//Not cached
 		const char* uniform_id_cstr = uniform_id.c_str();
 		glc(int uniform_location = glGetUniformLocation(id, uniform_id_cstr));
 		if (uniform_location == -1) {
-			spdlog::warn("uniform '{}' is not associated with shader", uniform_id);
+
+			helper::log(LogType::WARNING, __func__, "uniform '{}' is not associated with shader", {uniform_id});
 			return;
 		}
 
@@ -156,13 +156,13 @@ void Shader::uniformMatrix3f(const std::string& uniform_id, glm::mat3 mat) {
 
 void Shader::model(const glm::mat4& model_mat, const bool normal_mat) {
 	if (!mvpn_def) {
-		spdlog::warn("mvpn not set for model");
+		helper::log(LogType::WARNING, __func__, "mvpn not set for model");
 		return;
 	}
 	uniformMatrix4f(m, model_mat);
 	if (normal_mat) {
 		if (n == "")
-			spdlog::warn("normal matrix attempted to be changed when n is not set");
+			helper::log(LogType::WARNING, __func__, "normal matrix attempted to be changed when n is not set");
 		else
 			uniformMatrix3f(n, glm::mat3(glm::transpose(glm::inverse(model_mat))));
 	}
@@ -170,7 +170,7 @@ void Shader::model(const glm::mat4& model_mat, const bool normal_mat) {
 
 void Shader::view(const glm::mat4& view_mat) {
 	if (!mvpn_def) {
-		spdlog::warn("mvpn not set for model");
+		helper::log(LogType::WARNING, __func__, "mvpn not set for view");
 		return;
 	}
 	uniformMatrix4f(v, view_mat);
@@ -178,7 +178,7 @@ void Shader::view(const glm::mat4& view_mat) {
 
 void Shader::project(const glm::mat4& project_mat) {
 	if (!mvpn_def) {
-		spdlog::warn("mvpn not set for model");
+		helper::log(LogType::WARNING, __func__, "mvpn not set for project");
 		return;
 	}
 	uniformMatrix4f(p, project_mat);
@@ -209,7 +209,7 @@ void Shader::set_mat_uniforms(const std::string &spec, const std::string &shi) {
 
 void Shader::set_material(const float shi) {
 	if (!mat_uni_def) {
-		spdlog::warn("material uniforms have not been defined.");
+		helper::log(LogType::WARNING, __func__, "material uniforms have not been defined, ignoring call");
 		return;
 	}
 
@@ -230,7 +230,7 @@ void Shader::set_light_uniforms(const std::string& amb, const std::string &spec,
 void Shader::set_light(const glm::vec3 amb, const glm::vec3 spec, const glm::vec3 diff, const float constant,
                        const float linear, const float quadratic) {
 	if (!light_uni_def) {
-		spdlog::warn("light uniforms have not been defined.");
+		helper::log(LogType::WARNING, __func__, "light uniforms have not been defined, ignoring call");
 		return;
 	}
 

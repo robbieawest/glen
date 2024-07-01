@@ -1,11 +1,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <string>
-#include "spdlog/spdlog.h"
 #include "Application.h"
 #include "AppState.h"
 #include "Shader/Shader.h"
 #include "Utils/GlenConstants.h"
+#include "Utils/MiscHelper.h"
+#include "Utils/LogType.h"
 #include "Error/GLError.h"
 
 Application* Application::instance = nullptr;
@@ -35,22 +36,22 @@ Application::Application() {
     glfwMakeContextCurrent(window);
     if (window == nullptr)
     {
-        spdlog::error("Could not initialize GLFW");
+        helper::log(LogType::ERROR, __func__, "Could not initialize GLFW");
         glfwTerminate();
         state = AppState::FAILED;
         return;
     }
-    spdlog::info("GLFW initialized without error");
+    helper::log(LogType::INFO, __func__, "GLFW initialized without error");
 
     glfwSetKeyCallback(window, key_callback);
 
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) {
-        spdlog::error("Could not intialize GLEW");
+        helper::log(LogType::ERROR, __func__, "Could not initialize GLEW");
         state = AppState::FAILED;
         return;
     }
-    spdlog::info("GLEW initialized without error");
+    helper::log(LogType::INFO, __func__, "GLEW initialized without error");
 
     glc(glViewport(0, 0, WIDTH, HEIGHT));
 }
@@ -106,7 +107,9 @@ void Application::run() {
         glfwPollEvents();
         if(glfwWindowShouldClose(window)) state = AppState::HALTED;
     }
-    spdlog::info("Glen exited at state {}", toString(state));
+
+
+    helper::log(LogType::INFO, __func__, "Glen exited at state {}", {toString(state)});
 }
 
 

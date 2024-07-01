@@ -9,13 +9,10 @@ namespace AppState {
         switch(state) {
             case RUNNING:
                 return "RUNNING";
-                break;
             case HALTED:
                 return "HALTED";
-                break;
             case FAILED:
                 return "FAILED";
-                break;
             default:
                 return "Literally impossible";
         }

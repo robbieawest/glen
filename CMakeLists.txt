@@ -2,7 +2,14 @@ cmake_minimum_required (VERSION 3.1)
 
 project (glen)
 
-set(CMAKE_GENERATOR_PLATFORM x86)
+#set(CMAKE_C_COMPILER i686-w64-mingw32-gcc)
+#set(CMAKE_CXX_COMPILER i686-w64-mingw32-g++)
+
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+
+#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m32")
+#set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -m32")
 
 add_executable(glen
   src/main.cpp
@@ -19,11 +26,12 @@ add_executable(glen
         src/Utils/MiscHelper.tpp
         src/Texture/Texture.cpp
         src/Texture/Texture.h
+        src/Utils/LogType.h
 )
 
-set_property(TARGET glen PROPERTY CXX_STANDARD 23)
+set_property(TARGET glen PROPERTY CXX_STANDARD 20)
 
-add_compile_definitions(-DGLEW_STATIC -DSTB_IMAGE_IMPLEMENTATION)
+target_compile_options(glen PRIVATE -DGLEW_STATIC -DSTB_IMAGE_IMPLEMENTATION -Wall)
 
 set(dep ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)
 message("dep ${dep}")
@@ -34,7 +42,6 @@ target_include_directories(glen PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${dep}/glew/include
         ${dep}/glfw/include
-        ${dep}/spdlog
         ${dep}/stb
         ${dep}/glm
 )
